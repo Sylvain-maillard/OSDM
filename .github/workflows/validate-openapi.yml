@@ -25,3 +25,11 @@ jobs:
 
       - name: Validate OpenAPI documents
         run: redocly lint --format=github-actions specification/**/*.yml
+
+      - name: Validate OpenAPI documents with OpenAPI Generator (Draft only)
+        run: |
+          for file in specification/**/*-draft.yml; do
+            echo "::group::Validating $file"
+            docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli:latest-release validate -i "/local/$file"
+            echo "::endgroup::"
+          done
